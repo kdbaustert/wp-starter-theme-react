@@ -161,3 +161,57 @@ add_action('widgets_init', function () {
         'id' => 'sidebar-footer',
     ] + $config);
 });
+
+/**
+ * Add the Google Analytics measurement ID to the Customizer.
+ *
+ * @return void
+ */
+add_action('customize_register', function ($wp_customize) {
+    $wp_customize->add_section('google_analytics', [
+        'title' => __('Google Analytics', 'sage'),
+        'priority' => 160,
+    ]);
+
+    $wp_customize->add_setting('ga_measurement_id', [
+        'sanitize_callback' => function ($value) {
+            $value = strtoupper(trim($value));
+
+            return $value === '' || preg_match('/^G-[A-Z0-9]+$/', $value)
+                ? $value
+                : new \WP_Error('invalid_ga_measurement_id', __('Enter a GA4 measurement ID, such as G-XXXXXXXXXX.', 'sage'));
+        },
+    ]);
+
+    $wp_customize->add_control('ga_measurement_id', [
+        'label' => __('Measurement ID', 'sage'),
+        'description' => __('Tracking only runs on production sites.', 'sage'),
+        'section' => 'google_analytics',
+        'type' => 'text',
+    ]);
+});
+
+/**
+ * Load Google Analytics when a measurement ID is set.
+ *
+ * Local and staging sites are skipped so their traffic stays out of the
+ * reports. WordPress treats a site with no WP_ENVIRONMENT_TYPE as production.
+ *
+ * @return void
+ */
+add_action('wp_enqueue_scripts', function () {
+    $id = get_theme_mod('ga_measurement_id');
+
+    if (! $id || wp_get_environment_type() !== 'production') {
+        return;
+    }
+
+    wp_enqueue_script('google-analytics', "https://www.googletagmanager.com/gtag/js?id={$id}", [], null, [
+        'strategy' => 'async',
+    ]);
+
+    wp_add_inline_script('google-analytics', sprintf(
+        "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', %s);",
+        wp_json_encode($id)
+    ), 'before');
+});

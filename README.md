@@ -126,6 +126,12 @@ Activate WooCommerce and the shop renders inside the theme's layout. This is han
 
 The primary menu renders as a Bootstrap navbar that collapses on small screens. It shows one level: dropdown submenus would need a custom nav walker.
 
+### Google Analytics
+
+Paste the site's GA4 measurement ID (it starts with `G-`) under Appearance → Customize → Google Analytics. The tag loads on every front-end page once the ID is set. Clear the field to turn it off.
+
+Tracking only runs when `wp_get_environment_type()` is `production`. WordPress returns that when `WP_ENVIRONMENT_TYPE` isn't defined, so set it to `local` or `staging` in `wp-config.php` on other copies of the site. Bedrock sets it from `WP_ENV` already.
+
 ### Translations
 
 Strings use the theme's text domain, which the rename script sets. With [WP-CLI](https://wp-cli.org/) installed:
