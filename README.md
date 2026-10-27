@@ -128,9 +128,11 @@ The primary menu renders as a Bootstrap navbar that collapses on small screens. 
 
 ### Google Analytics
 
-Paste the site's GA4 measurement ID (it starts with `G-`) under Appearance → Customize → Google Analytics. The tag loads on every front-end page once the ID is set. Clear the field to turn it off.
+Paste the site's GA4 measurement ID (it starts with `G-`) under Appearance → Google Analytics. The tag loads on every front-end page once the ID is set. Clear the field to turn it off. The settings are saved in the `theme_google_analytics` option.
 
-Tracking only runs when `wp_get_environment_type()` is `production`. WordPress returns that when `WP_ENVIRONMENT_TYPE` isn't defined, so set it to `local` or `staging` in `wp-config.php` on other copies of the site. Bedrock sets it from `WP_ENV` already.
+The Environments checkboxes pick which environments load the tag: local, development, staging and production. Only production is ticked by default, and ticking none turns tracking off. The tag loads when `wp_get_environment_type()` is one of the ticked ones. WordPress returns `production` when `WP_ENVIRONMENT_TYPE` isn't defined, so set it in `wp-config.php` on other copies of the site. Bedrock sets it from `WP_ENV` already. To check the tag on staging, tick Staging there, and untick it when you're done so test visits stay out of the reports.
+
+Tick "Logged-in staff" to skip anyone who can edit posts (authors, editors and administrators), so your own visits aren't counted.
 
 ### Translations
 
