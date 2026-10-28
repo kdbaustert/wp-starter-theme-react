@@ -85,7 +85,30 @@ add_action('after_setup_theme', function () {
      */
     register_nav_menus([
         'primary_navigation' => __('Primary Navigation', 'sage'),
+        'footer_navigation' => __('Footer Navigation', 'sage'),
     ]);
+
+    /**
+     * Enable a logo under Appearance > Customize > Site Identity. It replaces
+     * the site name in the navbar.
+     *
+     * @link https://developer.wordpress.org/themes/functionality/custom-logo/
+     */
+    add_theme_support('custom-logo', [
+        'height' => 80,
+        'width' => 240,
+        'flex-height' => true,
+        'flex-width' => true,
+    ]);
+
+    /**
+     * Register image sizes for cards and full-width heroes. Images uploaded
+     * before a size existed need `wp media regenerate` to get it.
+     *
+     * @link https://developer.wordpress.org/reference/functions/add_image_size/
+     */
+    add_image_size('card', 720, 405, true);
+    add_image_size('hero', 1920, 720, true);
 
     /**
      * Disable the default block patterns.
@@ -137,6 +160,31 @@ add_action('after_setup_theme', function () {
      */
     add_theme_support('customize-selective-refresh-widgets');
 }, 20);
+
+/**
+ * Offer the theme's image sizes in the block editor's size picker.
+ *
+ * @return array
+ */
+add_filter('image_size_names_choose', function ($sizes) {
+    return $sizes + [
+        'card' => __('Card', 'sage'),
+        'hero' => __('Hero', 'sage'),
+    ];
+});
+
+/**
+ * Add an Unstyled style to the List block, Bootstrap's .list-unstyled. The
+ * CSS is in resources/css/_blocks.scss.
+ *
+ * @return void
+ */
+add_action('init', function () {
+    register_block_style('core/list', [
+        'name' => 'unstyled',
+        'label' => __('Unstyled', 'sage'),
+    ]);
+});
 
 /**
  * Register the theme sidebars.

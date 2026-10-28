@@ -1,4 +1,7 @@
 import './bootstrap'
+import { initColorModes } from './color-mode'
+
+initColorModes()
 
 // __THEME_REACT__ is set from the features switch in vite.config.js. React is
 // only downloaded on pages that contain an island.
